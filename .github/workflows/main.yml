@@ -2,7 +2,7 @@ name: Monthly Workflow
 
 on:
   schedule:
-    # Runs at 00:00 UTC on days 28 through 31 of every month
+    # Runs at 00:00 UTC on days 28 through 31 of every month 
     - cron: '0 0 28-31 * *'
   workflow_dispatch: # Allows manual trigger from Actions tab
 
