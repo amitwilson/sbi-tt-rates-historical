@@ -21,3 +21,5 @@ jobs:
       - name: Your Task
         run: |
           echo "Running your scheduled end-of-month script here..."
+      - name: Keepalive Workflow
+        uses: gautamkrishnar/keepalive-workflow@v1
