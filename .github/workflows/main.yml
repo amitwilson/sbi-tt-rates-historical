@@ -28,6 +28,6 @@ jobs:
           echo "Running your scheduled end-of-month script here..."
 
       - name: Keepalive
-        run: gh workflow enable "${{ github.workflow }}" --repo "${{ github.repository }}"
+        run: gh api -X PUT repos/${{ github.repository }}/actions/workflows/main.yml/enable
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
