@@ -2,24 +2,32 @@ name: Monthly Workflow
 
 on:
   schedule:
-    # Runs at 00:00 UTC on days 28 through 31 of every month 
     - cron: '0 0 28-31 * *'
-  workflow_dispatch: # Allows manual trigger from Actions tab
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: write
 
 jobs:
   run-monthly-task:
     runs-on: ubuntu-latest
     steps:
       - name: Check if today is the last day of the month
+        id: check
         run: |
-          if [ $(date -d tomorrow +%d) -ne 01 ]; then
-            echo "Today is not the last day of the month. Exiting..."
-            exit 0
+          if [ "$(date -d tomorrow +%d)" = "01" ]; then
+            echo "last_day=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "last_day=false" >> "$GITHUB_OUTPUT"
           fi
-          echo "Today IS the last day of the month! Continuing job execution..."
 
       - name: Your Task
+        if: steps.check.outputs.last_day == 'true' || github.event_name == 'workflow_dispatch'
         run: |
           echo "Running your scheduled end-of-month script here..."
-      - name: Keepalive Workflow
-        uses: gautamkrishnar/keepalive-workflow@v1
+
+      - name: Keepalive
+        run: gh workflow enable "${{ github.workflow }}" --repo "${{ github.repository }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
