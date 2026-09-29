@@ -21,11 +21,12 @@ jobs:
           else
             echo "last_day=false" >> "$GITHUB_OUTPUT"
           fi
-
-      - name: Your Task
+          
+      - name: Sync fork from original
         if: steps.check.outputs.last_day == 'true' || github.event_name == 'workflow_dispatch'
-        run: |
-          echo "Running your scheduled end-of-month script here..."
+        run: gh repo sync ${{ github.repository }} --branch master
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Keepalive
         run: gh api -X PUT repos/${{ github.repository }}/actions/workflows/main.yml/enable
